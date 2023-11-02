@@ -1,4 +1,14 @@
-# Jéssica Bueno
+# MOISÉS WEBER
+
+1. configurar o .env com as variaveis do docker compose
+2. docker compose up -d
+3. docker exec -it etl-conta_backend bash
+4. php artisan migrate:fresh
+
+# REFERENCIAS
+
+https://www.mongodb.com/compatibility/mongodb-laravel-integration
+https://github.com/mongodb/laravel-mongodb/blob/4.1/docs/install.md
 
 
 

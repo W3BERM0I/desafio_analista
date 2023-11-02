@@ -10,7 +10,7 @@ services:
     container_name: etl-conta_backend
     working_dir: /var/www/html/
     depends_on:
-      - mysql
+      - mongo
       - redis
     networks:
       - etl-conta_network
@@ -49,37 +49,43 @@ services:
       # BACK_HOST: php:8080/api
       CHOKIDAR_USEPOLLING: 'true'
       HOST: '0.0.0.0'
-  
-  #mysql
-  mysql:
-    image: mysql:8.0
-    container_name: etl-conta_database
-    networks:
-      - etl-conta_network
-    ports:
-      - "3307:3306"
-    volumes:
-      - "./db:/home/bkp"
-      - "mysql_db:/var/lib/mysql"
-    environment:
-      MYSQL_ROOT_HOST: '0.0.0.0'
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_PASSWORD: user
-      MYSQL_USER: user
-      MYSQL_DATABASE: etl-conta_database
 
-  #phpmyadmin
-  dbadmin:
-    image: phpmyadmin/phpmyadmin
+  #mongo
+  mongo: 
+    image: mongo
     restart: "no"
-    container_name: etl-conta_phpmyadmin
+    container_name:  etl-conta_mongo
     networks:
       - etl-conta_network
     ports:
-      - "3033:80"
+      - 27017:27017
     environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: etl-conta
+    volumes:
+      - "mongo-db:/data/db"
+      - "mongo-configdb:/data/configdb"
+
+  #mongo-express
+  mongo-express:
+    image: mongo-express
+    restart: unless-stopped
+    container_name: etl-conta-mongo-express
+    networks:
+      - etl-conta_network
+    ports:
+      - 8081:8081  
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: mexpress
+      ME_CONFIG_BASICAUTH_PASSWORD: mexpress
+    links:
+      - mongo  
+
 
   #redis
   redis:
@@ -109,10 +115,12 @@ services:
 
 
 volumes:
-  mysql_db:
-    driver: "local"
   redis_db:
     driver: "local"
+  mongo-db:
+    driver: "local"
+  mongo-configdb:
+    driver: "local" 
 
 networks:
   etl-conta_network:
