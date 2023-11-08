@@ -21,10 +21,10 @@ services:
       - "./apache/sites-enabled/:/etc/apache2/sites-enabled/"
     environment:
       FRONTEND_HOST: node:3080
-      MYSQL_HOST: mysql
-      MYSQL_PASSWORD: user
-      MYSQL_USER: user
-      MYSQL_DATABASE: etl-conta_database
+      # MYSQL_HOST: mysql
+      # MYSQL_PASSWORD: user
+      # MYSQL_USER: user
+      # MYSQL_DATABASE: etl-conta_database
       REDIS_HOST: redis 
       REDIS_PORT: 6379
       REDIS_PASSWORD: senha

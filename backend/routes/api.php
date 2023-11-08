@@ -24,4 +24,5 @@ Route::get('teste', function () {
 });
 
 Route::post('upload', [FileController::class, 'upload']);
+Route::post('upload1', [FileController::class, 'store']);
 

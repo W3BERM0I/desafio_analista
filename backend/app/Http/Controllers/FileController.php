@@ -14,7 +14,7 @@ class FileController extends Controller
 
         // if ($request->hasFile('imagem')) {
         if (true) {
-            $arquivoPrn = $request->file('imagem');
+            $arquivoPrn = $request->file('file');
 
             if ($arquivoPrn->isValid()) {
                 // Leia o conteúdo do arquivo .PRN
@@ -26,24 +26,11 @@ class FileController extends Controller
                 
                 $dados = [];
                 foreach ($linhas as $linha) {
-                    $campos = explode("\t", $linha);
-                    
-                    info('json', [$campos]);
-                    // Aqui, assumimos que a primeira coluna é a chave e a segunda coluna é o valor
-                    if (count($campos) >= 2) {
-                        $dados[$campos[0]] = $campos[1];
-                    }
+                    info('linha: ', [$linha]);
                 }
-                
-                // Converta os dados em JSON
-                $json = json_encode($dados, JSON_PRETTY_PRINT);
+  
 
-                // Salve o JSON em um arquivo ou retorne-o como resposta, dependendo das necessidades
-                // Exemplo: salvar o JSON em um arquivo
-                $caminhoDoJson = 'arquivo.json';
-                Storage::disk('local')->put($caminhoDoJson, $json);
-
-                return "Arquivo .PRN convertido para JSON e salvo em $caminhoDoJson.";
+                return "Arquivo .PRN convertido e salvo.";
             } else {
                 return "Arquivo inválido.";
             }
@@ -53,5 +40,52 @@ class FileController extends Controller
 
     return response()->json('cheguei');
 
+    }
+
+    public function store(Request $request)
+    {
+         $file = $request->file('file');
+         info('file', [$file]);
+
+    //     $path = Storage::disk('local')->path("chunks/{$file->getClientOriginalName()}");
+
+    //     File::append($path, $file->get());
+
+    //     if ($request->has('is_last') && $request->boolean('is_last')) {
+    //         $name = basename($path, '.part');
+
+    //         File::move($path, "/path/to/public/someid/{$name}");
+    //     }
+
+    info('request: ' . $request->name);
+
+    // if ($request->hasFile('imagem')) {
+    if (true) {
+        $arquivoPrn = $request->file('file');
+
+        if ($arquivoPrn->isValid()) {
+            // Leia o conteúdo do arquivo .PRN
+            $conteudo = File::get($arquivoPrn);
+
+            // Agora, você precisa processar o conteúdo do arquivo .PRN para convertê-lo em um array associativo ou objeto
+            // Aqui, usaremos um exemplo simples para demonstração. Adapte-o ao seu formato de arquivo .PRN
+            $linhas = explode("\n", $conteudo);
+            
+            $dados = [];
+            foreach ($linhas as $linha) {
+                info('linha: ', [$linha]);
+            }
+
+
+            return "Arquivo .PRN convertido e salvo.";
+        } else {
+            return "Arquivo inválido.";
+        }
+    } else {
+        return "Nenhum arquivo .PRN foi enviado.";
+    }
+
+
+        return response()->json(['uploaded' => true]);
     }
 }
