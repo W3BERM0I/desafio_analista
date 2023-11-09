@@ -44,9 +44,6 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
-         $file = $request->file('file');
-         info('file', [$file]);
-
     //     $path = Storage::disk('local')->path("chunks/{$file->getClientOriginalName()}");
 
     //     File::append($path, $file->get());
@@ -56,12 +53,11 @@ class FileController extends Controller
 
     //         File::move($path, "/path/to/public/someid/{$name}");
     //     }
-
-    info('request: ' . $request->name);
-
     // if ($request->hasFile('imagem')) {
     if (true) {
         $arquivoPrn = $request->file('file');
+
+        info('efedexd:', [$arquivoPrn]);
 
         if ($arquivoPrn->isValid()) {
             // Leia o conteúdo do arquivo .PRN
@@ -73,7 +69,7 @@ class FileController extends Controller
             
             $dados = [];
             foreach ($linhas as $linha) {
-                info('linha: ', [$linha]);
+                //info('linha: ', [$linha]);
             }
 
 
