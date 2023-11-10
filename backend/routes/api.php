@@ -23,6 +23,5 @@ Route::get('teste', function () {
     return response()->json('cheguei', 200);
 });
 
-Route::post('upload', [FileController::class, 'upload']);
-Route::post('upload1', [FileController::class, 'store'])->middleware('cors')->withoutMiddleware('throttle:api');
+Route::post('upload', [FileController::class, 'store'])->middleware('cors')->withoutMiddleware('throttle:api');
 

@@ -44,7 +44,7 @@ const sendFile = async () => {
         const formData = new FormData();
         formData.append("name", file.value.name);
         formData.append("file", fileChunck);
-        await FileApi.upload1(formData).then((res => {
+        await FileApi.upload(formData).then((res => {
             console.log(res);
         })).catch((err => {
             console.error(err);
