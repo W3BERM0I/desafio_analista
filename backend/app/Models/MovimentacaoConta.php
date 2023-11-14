@@ -26,7 +26,6 @@ class MovimentacaoConta extends Model
         'credito',
         'dataHora',
         'id',
-        'total UA/PAC',
         'lctos',
     ];
 }
