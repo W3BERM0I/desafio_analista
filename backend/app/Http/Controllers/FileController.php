@@ -17,6 +17,7 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
+        
 
         if ($request->file('file')) {
             $arquivoPrn = $request->file('file');
@@ -59,6 +60,7 @@ class FileController extends Controller
                             'debito' => $dadosAux['debito'],
                             'credito' => $dadosAux['credito'],
                         ];
+
                         $coopAg = [];
                         $dadosAux = [];
                         continue;
@@ -70,8 +72,9 @@ class FileController extends Controller
 
                         $dadosAux['debito'] = $dadosAux['debito'] ? $dadosAux['debito'] : trim(substr($linha, 99, 13));
 
-                        if($tresLinhas)
+                        if($tresLinhas){
                             $dadosAux['dataHora'] = trim(substr($linha, 116, 16));
+                        }
 
                         if(!preg_match("/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/", $dadosAux['dataHora'])){
                             $tresLinhas = !$tresLinhas;
@@ -93,12 +96,12 @@ class FileController extends Controller
                             'dataHora' => $dadosAux['dataHora'],
                         ];
                         $duasLinhas = !$duasLinhas;
+                        
                         $dadosAux = [];
                         continue;
                     }
 
                     $dadosAux['conta'] = trim(substr($linha, 8, 7));
-
 
 
                     if(preg_match('/^\d{5}-\d$/', $dadosAux['conta'])) {
@@ -130,8 +133,7 @@ class FileController extends Controller
                         $dadosAux['cod'] = trim(substr($linha, 58, 3));
                         $dadosAux['descricao'] = trim(substr($linha, 62, 26));
                         $dadosAux['dr'] = trim(substr($linha, 88, 7));
-                        $dadosAux['credito'] = trim(substr($linha, 110, 30));
-                        $dadosAux['credito'] = (explode(" ", $dadosAux['credito']))[0];
+                        $dadosAux['credito'] = trim(substr($linha, 110, 20));
                         $dadosAux['debito'] = trim(substr($linha, 99, 13));
                         $dadosAux['id'] = trim(substr($linha, 130, 2));
                         $duasLinhas = !$duasLinhas;
