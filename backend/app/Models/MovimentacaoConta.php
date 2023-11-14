@@ -9,8 +9,13 @@ class MovimentacaoConta extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mongodb';
+
+    protected $collection = 'movimentacao_contas';
+
     protected $fillable = [
-        'origem',
+        'coop',
+        'agencia',
         'conta',
         'nomeCorrentista',
         'docto',
@@ -20,7 +25,8 @@ class MovimentacaoConta extends Model
         'debito',
         'credito',
         'dataHora',
-        'totalUA',
+        'id',
+        'total UA/PAC',
         'lctos',
     ];
 }

@@ -1,0 +1,50 @@
+*:root {
+    --verde-sicredi: #3fa110;
+    --verde-escuro: #146e37;
+    --verde-mais-escuro: #323c32;
+
+    --neutro-escuro: #5a645a;
+    --neutro-claro: #d7e6c8;
+
+    --amarelo: #ffcd00;
+
+    --cinza: #f5f5f5;
+    --cinza-claro: #fafafa;
+
+    --branco: #ffffff;
+
+    --rosa: #ed5a6c;
+    --magenta: #e60050;
+    --bordo: #730028;
+    --azul: #46d7ff;
+    --laranja: #ff6400;
+}
+
+/* * {
+    text-align: left;
+} */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Exo 2", "Calibri", sans-serif;
+
+}
+
+p,
+a,
+span,
+button {
+    font-family: "Nunito", "Arial", sans-serif;
+}
+
+.link {
+    color: var(--verde-sicredi);
+}
+
+.link--disabled {
+    color: var(--neutro-claro);
+}

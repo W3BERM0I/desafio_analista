@@ -1,6 +1,11 @@
 <template>
   <v-app>
     <v-main>
+      <PNavigation
+        home-link="login"
+        :sidebar-items="sidebarItems"
+        :sidebar-user-items="sidebarUserItems"
+      />
       <v-file-input
         show-size
         label="File input"
@@ -51,5 +56,57 @@ const sendFile = async () => {
         }));
     }
 };
+
+const sidebarItems = [
+    {
+        icon: "home",
+        text: "Início",
+        action: () => (alert("cheguei")),
+    },
+    {
+        icon: "user",
+        text: "Meu Perfil",
+        action: () => (alert("cheguei")),
+    },
+    {
+        icon: "user-shield",
+        text: "Segurança",
+        action: () => {},
+        children: [
+            {
+                icon: "lock",
+                text: "Alterar Senha",
+                action: () => (alert("cheguei")),
+            },
+            {
+                icon: "key",
+                text: "Autenticação",
+                action: () => (alert("cheguei")),
+            },
+        ],
+    },
+    {
+        icon: "phone",
+        text: "Contatos",
+        action: () => (alert("cheguei")),
+    },
+];
+
+const sidebarUserItems = [
+    {
+        icon: "right-from-bracket",
+        text: "Sair",
+        action: async () => {
+            try {
+                // await loginApi.logout();
+                // loginStore.unsetCookies();
+                // userStore.unsetUserData();
+                // router.push({ name: "Entrar" });
+            } catch (error) {
+                //
+            }
+        },
+    },
+];
 </script>
     

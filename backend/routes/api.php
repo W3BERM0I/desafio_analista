@@ -24,4 +24,5 @@ Route::get('teste', function () {
 });
 
 Route::post('upload', [FileController::class, 'store'])->middleware('cors')->withoutMiddleware('throttle:api');
+Route::get('index', [FileController::class, 'index']);
 

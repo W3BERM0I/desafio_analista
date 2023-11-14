@@ -12,11 +12,13 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@mdi/font": "7.0.96",
     "axios": "^1.6.0",
+    "maska": "^2.1.10",
     "pinia": "^2.0.23",
     "roboto-fontface": "*",
     "vue": "^3.2.0",
     "vue-router": "^4.0.0",
-    "vuetify": "^3.0.0"
+    "vuetify": "^3.0.0",
+    "pioneira-ui": "git+https://pioneira_packages:V4gtzx3sFz6DDRLRY9a5@gitlab.infrastructure.sicredipioneira.com.br/pioneira/packages/ui.git#2.0.0-beta10"
   },
   "devDependencies": {
     "@babel/types": "^7.21.4",
