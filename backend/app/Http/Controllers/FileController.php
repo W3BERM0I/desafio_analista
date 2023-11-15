@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MovimentacaoConta;
+use App\Models\TotaisDias;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class FileController extends Controller
 {
@@ -17,8 +19,6 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
-        
-
         if ($request->file('file')) {
             $arquivoPrn = $request->file('file');
 
@@ -33,11 +33,16 @@ class FileController extends Controller
 
                 //dados finais que serão armazenados no array
                 $dados = [];
+
+                $totaisDias = [];
+
                 //dados temporarios para coletar os dados do arquivo
                 $dadosAux = [];
 
                 //salva a ultima coop e agencia
                 $coopAg = [];
+
+                $totais = [];
 
                 //2 linhas
                 $duasLinhas = false;
@@ -47,9 +52,25 @@ class FileController extends Controller
                 $origem = '';
 
                 foreach ($linhas as $linha) {
-                    $dadosAux['total UA/PAC'] = trim((substr($linha, 40, 5)));
+                    $dadosAux['total UA/PAC'] = trim((substr($linha, 40, 6)));
+
+                    //totais dia
+                    if($dadosAux['total UA/PAC'] === 'TOTAIS') {
+                        $dadosAux = [];
+                        $dadosAux['data'] = trim(substr($linha, 54, 10));
+                        $dadosAux['lctos'] = utf8_encode(trim(substr($linha, 76, 8)));
+                        $dadosAux['debito'] = trim(substr($linha, 104, 13));
+                        $dadosAux['credito'] = trim(substr($linha, 122, 14));
+
+                        $totaisDias[] = $dadosAux;
+
+                        $dadosAux = [];
+                        continue;
+                    }
+
+                    //total da mesma coop e agencia
                     if($dadosAux['total UA/PAC'] === 'Total') {
-                        $dadosAux['lctos'] = utf8_encode(trim(substr($linha, 76, 8))); //esta incorreto
+                        $dadosAux['lctos'] = utf8_encode(trim(substr($linha, 76, 8)));
                         $dadosAux['debito'] = trim(substr($linha, 104, 13));
                         $dadosAux['credito'] = trim(substr($linha, 122, 14));
 
@@ -74,6 +95,7 @@ class FileController extends Controller
 
                         if($tresLinhas){
                             $dadosAux['dataHora'] = trim(substr($linha, 116, 16));
+                            $tresLinhas = !$tresLinhas;
                         }
 
                         if(!preg_match("/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/", $dadosAux['dataHora'])){
@@ -107,26 +129,27 @@ class FileController extends Controller
                     if(preg_match('/^\d{5}-\d$/', $dadosAux['conta'])) {
 
                         //verifica se a variavel o campo da origem esta vazio e se estiver vazio pega o valor do ultima campo preenchido
-                        $origem = trim(substr($linha, 0, 7)) ? trim(substr($linha, 0, 7)) : $origem;
+                        $origem = trim(substr($linha, 0, 7));
 
-                        // info('coop: ' , [!$coopAg]);
-                        if(empty($meuArray)) {
-                            //verica se for um array ele esta pegando o valor de origem anterior
-                            if(is_array($origem)) {
+                        // verifica se tem uma coop/ag salva da ultima transação
+                        if(!empty($origem)) {
+                            // verifica se o campo de coop vem junto ou se esta sem (quando esta sem quer dizer que é da nossa coop: 0101)
+                            if(strlen($origem) <= 3){
+                                $coopAg['coop'] = '0101';
+                                $coopAg['agencia'] = $origem;
+                            } else {
+                                $origem = explode('/', $origem);
                                 $coopAg['coop'] = $origem[0];
                                 $coopAg['agencia'] = $origem[1];
-                            } else {
-                                // verifica se o campo de coop vem junto ou se esta sem (quando esta sem quer dizer que é da nossa coop: 0101)
-                                if(strlen($origem) <= 3){
-                                    $coopAg['coop'] = '0101';
-                                    $coopAg['agencia'] = $origem;
-                                } else {
-                                    $origem = explode('/', $origem);
-                                    $coopAg['coop'] = $origem[0];
-                                    $coopAg['agencia'] = $origem[1];
-                                }
                             }
+
+                            Cache::put('coopAg', $coopAg, (5 * 60)); // 5 minutos
                         }
+
+                        //verifica se tem alguma coop/ag salva no cache do arquivo anterior
+                        if(empty($coopAg))
+                            $coopAg = Cache::get('coopAg');
+
 
                         $dadosAux['nomeCorrentista'] = utf8_encode(trim(substr($linha, 16, 16)));
                         $dadosAux['docto'] = utf8_encode(trim(substr($linha, 48, 7)));
@@ -142,7 +165,10 @@ class FileController extends Controller
 
                 try {
                     foreach (array_chunk($dados, 1000) as $chunk)
-                    MovimentacaoConta::insert($dados);
+                        MovimentacaoConta::insert($dados);
+
+                    if(!empty($totaisDias)) TotaisDias::insert($totaisDias);
+                    
                 }  catch(Exception $e) {
                     info('error', [$e]);
                 }
