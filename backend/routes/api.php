@@ -19,7 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('teste', function () {
+Route::get('startEnd', function () {
+    info('start/stop');
     return response()->json('cheguei', 200);
 });
 

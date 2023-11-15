@@ -45,6 +45,9 @@ const createChunks = () => {
 };
   
 const sendFile = async () => {
+    FileApi.startEnd().then((res => {
+        console.log("start/end");
+    }));
     for (const fileChunck of files) {
         const formData = new FormData();
         formData.append("name", file.value.name);
@@ -55,6 +58,10 @@ const sendFile = async () => {
             console.error(err);
         }));
     }
+
+    FileApi.startEnd().then((res => {
+        console.log("start/end");
+    }));
 };
 
 const sidebarItems = [

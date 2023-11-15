@@ -7,5 +7,8 @@ export default {
                 "Content-Type": "multipart/form-data", // É importante definir o cabeçalho 'Content-Type' corretamente para FormData
             }
         });
-    }
+    },
+    startEnd: () => {
+        return axios.get("/startEnd");
+    },
 };
