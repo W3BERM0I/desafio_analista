@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\MetricsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,4 +27,10 @@ Route::get('startEnd', function () {
 
 Route::post('upload', [FileController::class, 'store'])->middleware('cors')->withoutMiddleware('throttle:api');
 Route::get('index', [FileController::class, 'index']);
+
+Route::get('DataMaiorMenorQtdMov', [MetricsController::class, 'DataMaiorMenorQtdMov']);
+Route::get('DataMaiorMenorSomaMov', [MetricsController::class, 'DataMaiorMenorSomaMov']);
+Route::get('movPixDiaSemana', [MetricsController::class, 'movPixDiaSemana']);
+Route::get('qtdValorMovPorCoopAg', [MetricsController::class, 'qtdValorMovPorCoopAg']);
+Route::get('credVsDebPorHora', [MetricsController::class, 'credVsDebPorHora']);
 
