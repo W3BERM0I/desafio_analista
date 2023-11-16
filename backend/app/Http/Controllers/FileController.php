@@ -59,29 +59,29 @@ class FileController extends Controller
                     $dadosAux['data'] = $dataHora[0];
                     $dadosAux['hora'] = $dataHora[1];
                     
-                } else
+                    $dados[] = [
+                            'origem' => $coopAg,
+                            'conta' => $dadosAux['conta'],
+                            'nomeCorrentista' => $dadosAux['nomeCorrentista'],
+                            'docto' => $dadosAux['docto'],
+                            'cod' => $dadosAux['cod'],
+                            'descricao' => $dadosAux['descricao'],
+                            'dr' => $dadosAux['dr'],
+                            'debito' => $dadosAux['debito'],
+                            'credito' => $dadosAux['credito'],
+                            'id' => $dadosAux['id'],
+                            'data' => $dadosAux['data'],
+                            'hora' => $dadosAux['hora'],
+                        ];
+    
+                    
+                    $duasLinhas = !$duasLinhas;
+                            
+                    $dadosAux = [];
                     continue;
-                
-                $dados[] = [
-                        'origem' => $coopAg,
-                        'conta' => $dadosAux['conta'],
-                        'nomeCorrentista' => $dadosAux['nomeCorrentista'],
-                        'docto' => $dadosAux['docto'],
-                        'cod' => $dadosAux['cod'],
-                        'descricao' => $dadosAux['descricao'],
-                        'dr' => $dadosAux['dr'],
-                        'debito' => $dadosAux['debito'],
-                        'credito' => $dadosAux['credito'],
-                        'id' => $dadosAux['id'],
-                        'data' => $dadosAux['data'],
-                        'hora' => $dadosAux['hora'],
-                    ];
+                }
 
-
-                $duasLinhas = !$duasLinhas;
-                        
-                $dadosAux = [];
-                continue;
+                continue;  
             }
 
             $dadosAux['conta'] = trim(substr($linha, 8, 7));
@@ -122,7 +122,7 @@ class FileController extends Controller
 
         try {
             foreach (array_chunk($dados, 1000) as $chunk)
-                MovimentacaoConta::insert($dados);
+                MovimentacaoConta::insert($chunk);
         }  catch(Exception $e) {
             info('error', [$e]);
         }
