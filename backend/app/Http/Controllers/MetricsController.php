@@ -67,7 +67,44 @@ class MetricsController extends Controller
     //Dia da semana em que houveram mais movimentações dos tipos (código de movimentação) “RX1” e “PX1”;
     public function movPixDiaSemana()
     {
-        return response()->json([MovimentacaoConta::whereIn('cod', ['RX1', 'PX1'])->count()], 200);
+        $resultados = MovimentacaoConta::raw(function ($collection) {
+            return $collection->aggregate([
+                [
+                    '$match' => [
+                        'cod' => ['$in' => ['RX1', 'PX1']], // Replace 'tes' with your specific description
+                    ],
+                ],
+                [
+                    '$addFields' => [
+                        'formattedDate' => [
+                            '$dateFromString' => [
+                                'dateString' => '$data',
+                                'format' => '%d/%m/%Y',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    '$group' => [
+                        '_id' => ['$dayOfWeek' => '$formattedDate'],
+                        'count' => ['$sum' => 1],
+                    ],
+                ],
+                [
+                    '$sort' => [
+                        'count' => -1,
+                    ],
+                ],
+            ]);
+        });
+        
+
+        $data['maior'] = $resultados->first();
+
+        // Acessar a data com a menor quantidade de movimentações
+        $data['menor'] = $resultados->last();
+
+        return response()->json([$data], 200);
     }
 
     //Quantidade e valor movimentado por coop/agência;
