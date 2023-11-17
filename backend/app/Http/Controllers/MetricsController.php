@@ -100,8 +100,6 @@ class MetricsController extends Controller
         
 
         $data['maior'] = $resultados->first();
-
-        // Acessar a data com a menor quantidade de movimentações
         $data['menor'] = $resultados->last();
 
         return response()->json([$data], 200);
@@ -110,7 +108,24 @@ class MetricsController extends Controller
     //Quantidade e valor movimentado por coop/agência;
     public function qtdValorMovPorCoopAg()
     {
-        return response()->json([MovimentacaoConta::whereIn('cod', ['RX1', 'PX1'])->count()], 200);
+        $resultados = MovimentacaoConta::raw(function ($collection) {
+            return $collection->aggregate([
+                [
+                    '$group' => [
+                        '_id' => '$origem',
+                        'somaMov' => ['$sum' => ['$add' => ['$debito', '$credito']]],
+                        'count' => ['$sum' => 1],
+                    ],
+                ],
+                [
+                    '$sort' => [
+                        '_id' => 1, // Use 1 for ascending order, -1 for descending order
+                    ],
+                ],
+            ]);
+        });
+    
+        return response()->json([$resultados], 200);
     }
 
     //Relação de créditos x débitos ao longo das horas do dia (valores fechados por hora. Ex: das 9h às 10h, das 10h às 11h, etc);  
