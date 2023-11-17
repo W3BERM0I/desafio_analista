@@ -11,33 +11,57 @@ class MetricsController extends Controller
     //Data com maior e menor quantidade de movimentações;
     public function DataMaiorMenorQtdMov()
     {
-        // $resultados = Movimentacao::select(DB::raw('DATE(data_movimentacao) as data'), DB::raw('COUNT(*) as total'))
-        // ->groupBy('data_movimentacao')
-        // ->orderBy('total', 'desc')
-        // ->get();
-    
-        
-        // $resultados = MovimentacaoConta::select(DB::raw('DATE(dataHora)'), DB::raw('COUNT(*) as total'))
-        // ->groupBy('dataHora')
-        // ->orderBy('total', 'desc')
-        // ->get();
+        $resultados = MovimentacaoConta::raw(function ($collection) {
+            return $collection->aggregate([
+                [
+                    '$group' => [
+                        '_id' => '$data',
+                        'count' => ['$sum' => 1],
+                    ],
+                ],
 
-        // // Acessar a data com a maior quantidade de movimentações
-        // $dataMaiorQuantidade = $resultados->first();
-        
-        // // Acessar a data com a menor quantidade de movimentações
-        // $dataMenorQuantidade = $resultados->last();
+        [
+            '$sort' => [
+                'count' => -1, // Use 1 for ascending order, -1 for descending order
+            ],
+        ],
+            ]);
+        });
 
-        
+        $data['maior'] = $resultados->first();
 
-        // return response()->json([MovimentacaoConta::whereIn('cod', ['RX1', 'PX1'])->count()], 200);
-        return response()->json([MovimentacaoConta::DataMaiorMenorQtdMov()], 200);
+        // Acessar a data com a menor quantidade de movimentações
+        $data['menor'] = $resultados->last();
+
+        return response()->json([$data], 200);
     }
 
     //Data com maior e menor soma de movimentações;
     public function DataMaiorMenorSomaMov()
     {
-        return response()->json([MovimentacaoConta::whereIn('cod', ['RX1', 'PX1'])->count()], 200);
+        $resultados = MovimentacaoConta::raw(function ($collection) {
+            return $collection->aggregate([
+                [
+                    '$group' => [
+                        '_id' => '$data',
+                        'somaMov' => ['$sum' => ['$add' => ['$debito', '$credito']]],
+                    ],
+                ],
+
+        [
+            '$sort' => [
+                'somaMov' => -1, // Use 1 for ascending order, -1 for descending order
+            ],
+        ],
+            ]);
+        });
+
+        $data['maior'] = $resultados->first();
+
+        // Acessar a data com a menor quantidade de movimentações
+        $data['menor'] = $resultados->last();
+
+        return response()->json([$data], 200);
     }
 
     //Dia da semana em que houveram mais movimentações dos tipos (código de movimentação) “RX1” e “PX1”;

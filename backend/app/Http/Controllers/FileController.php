@@ -74,7 +74,6 @@ class FileController extends Controller
                             'hora' => $dadosAux['hora'],
                         ];
     
-                    
                     $duasLinhas = !$duasLinhas;
                             
                     $dadosAux = [];
