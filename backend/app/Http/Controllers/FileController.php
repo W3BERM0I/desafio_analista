@@ -43,11 +43,26 @@ class FileController extends Controller
         //dados temporarios para coletar os dados do arquivo
         $dadosAux = [];
 
+        //salva o ultimo dados aux quando começa um arquivo novo
+        $ultimoDadosAux = [];
+        $ultimaCoopAg = '';
+
         //2 linhas
         $duasLinhas = false;
 
+        // verifica se ja começou a ler uma linha no final do ultimo arquivo
+        if(Cache::has('duasLinhas')) {
+            Cache::delete('duasLinhas');
+            $duasLinhas = !$duasLinhas;
+            $dadosAux = Cache::get('dadosAux');
+        }
+
+        // verifica se tem alguma coop/ag salva no cache do arquivo anterior
+        if(Cache::has('coopAg'))
+            $coopAg = Cache::get('coopAg');
+
         foreach ($linhas as $linha) {
-            if($duasLinhas) {
+            if($duasLinhas) {            
                 $dadosAux['id'] = $dadosAux['id'] ? $dadosAux['id'] : trim(substr($linha, 130, 2));
 
                 $dadosAux['debito'] = $dadosAux['debito'] ? $dadosAux['debito'] : $this->formamaStringDinheiro(trim(substr($linha, 99, 13)));
@@ -60,7 +75,7 @@ class FileController extends Controller
                     $dadosAux['hora'] = $dataHora[1];
                     
                     $dados[] = [
-                            'origem' => $coopAg,
+                            'origem' => $dadosAux['origem'],
                             'conta' => $dadosAux['conta'],
                             'nomeCorrentista' => $dadosAux['nomeCorrentista'],
                             'docto' => $dadosAux['docto'],
@@ -99,13 +114,10 @@ class FileController extends Controller
                    else
                        $coopAg = $origem;
 
-                    Cache::put('coopAg', $coopAg, (5 * 60)); // 5 minutos
+                    $ultimaCoopAg = $coopAg;
                 }
 
-                //verifica se tem alguma coop/ag salva no cache do arquivo anterior
-                if(empty($coopAg))
-                    $coopAg = Cache::get('coopAg');
-
+                $dadosAux['origem'] = $coopAg;  
                 $dadosAux['nomeCorrentista'] = utf8_encode(trim(substr($linha, 16, 16)));
                 $dadosAux['docto'] = utf8_encode(trim(substr($linha, 48, 7)));
                 $dadosAux['cod'] = trim(substr($linha, 58, 3));
@@ -115,9 +127,19 @@ class FileController extends Controller
                 $dadosAux['debito'] = $this->formamaStringDinheiro(trim(substr($linha, 99, 13)));
                 $dadosAux['id'] = trim(substr($linha, 130, 2));
 
+                $ultimoDadosAux = null;
+
+                $ultimoDadosAux = $dadosAux;
                 $duasLinhas = !$duasLinhas;
             }
         }
+
+        if($duasLinhas) {
+            Cache::put('dadosAux', $ultimoDadosAux, (5 * 60)); // 5 minutos
+            Cache::put('duasLinhas', $duasLinhas, (5 * 60)); // 5 minutos
+        }
+        
+        if($ultimaCoopAg) Cache::put('coopAg', $ultimaCoopAg, (5 * 60)); // 5 minutos
 
         try {
             foreach (array_chunk($dados, 1000) as $chunk)
@@ -135,6 +157,5 @@ class FileController extends Controller
         $value = str_replace(',', '.', $value);
         $value = floatval($value);
         return $value;
-        
     }
 }

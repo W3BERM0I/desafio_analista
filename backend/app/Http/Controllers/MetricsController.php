@@ -131,6 +131,31 @@ class MetricsController extends Controller
     //Relação de créditos x débitos ao longo das horas do dia (valores fechados por hora. Ex: das 9h às 10h, das 10h às 11h, etc);  
     public function credVsDebPorHora()
     {
-        return response()->json([MovimentacaoConta::whereIn('cod', ['RX1', 'PX1'])->count()], 200);
+        $resultados = MovimentacaoConta::raw(function ($collection) {
+            return $collection->aggregate([
+                [
+                    '$addFields' => [
+                        'formattedTime' => [
+                            '$dateFromString' => [
+                                'dateString' => '$hora',
+                                'format' => '%H:%M',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    '$group' => [
+                        '_id' => '$formattedTime',
+                    ],
+                ],
+            ]);
+        });
+        
+
+        // $data['maior'] = $resultados->first();
+        // $data['menor'] = $resultados->last();
+
+        return response()->json([$data], 200);
+        
     }
 }
