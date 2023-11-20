@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MetricsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,8 @@ Route::get('startEnd', function () {
     info('start/stop');
     return response()->json('cheguei', 200);
 });
+
+Route::post('login', [AuthController::class, 'login']);
 
 Route::post('upload', [FileController::class, 'store'])->middleware('cors')->withoutMiddleware('throttle:api');
 Route::get('index', [FileController::class, 'index']);

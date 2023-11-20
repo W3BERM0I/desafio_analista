@@ -92,17 +92,13 @@ class MetricsController extends Controller
                 ],
                 [
                     '$sort' => [
-                        'count' => -1,
+                        '_id' => 1,
                     ],
                 ],
             ]);
         });
-        
 
-        $data['maior'] = $resultados->first();
-        $data['menor'] = $resultados->last();
-
-        return response()->json([$data], 200);
+        return response()->json([$resultados], 200);
     }
 
     //Quantidade e valor movimentado por coop/agência;
@@ -114,12 +110,11 @@ class MetricsController extends Controller
                     '$group' => [
                         '_id' => '$origem',
                         'somaMov' => ['$sum' => ['$add' => ['$debito', '$credito']]],
-                        'count' => ['$sum' => 1],
                     ],
                 ],
                 [
                     '$sort' => [
-                        '_id' => 1, // Use 1 for ascending order, -1 for descending order
+                        'somaMov' => -1,
                     ],
                 ],
             ]);
