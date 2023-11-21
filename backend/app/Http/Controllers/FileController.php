@@ -97,7 +97,6 @@ class FileController extends Controller
                     $dadosAux = [];
                     continue;
                 }
-
                 continue;  
             }
 
@@ -120,7 +119,7 @@ class FileController extends Controller
                     $ultimaCoopAg = $coopAg;
                 }
 
-                $dadosAux['origem'] = $coopAg;  
+                $dadosAux['origem'] = $coopAg;
                 $dadosAux['nomeCorrentista'] = utf8_encode(trim(substr($linha, 16, 16)));
                 $dadosAux['docto'] = utf8_encode(trim(substr($linha, 48, 7)));
                 $dadosAux['cod'] = trim(substr($linha, 58, 3));

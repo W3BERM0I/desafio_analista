@@ -74,7 +74,7 @@ onMounted(async () => {
             plugins: {
                 title: {
                     display: true,
-                    text: "Dia da semana em que houveram mais movimentações dos tipos (código de movimentação) “RX1” e “PX1”"
+                    text: "Dia da semana em que houveram mais movimentações dos tipos “RX1” e “PX1”"
                 }
             },
         },

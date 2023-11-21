@@ -15,18 +15,18 @@
           <data-maior-menor-soma-mov class="resultado__dashbord elevation-4" />
           <mov-pix-dia-semana class="resultado__dashbord elevation-4" />
           <qtd-valor-mov-por-coop-ag class="resultado__dashbord elevation-4" />
-          <acoes-componente class="resultado__dashbord elevation-4 rounded-pill" />
+          <acoes-componente class="resultado__dashbord elevation-4" />
         </div>
       </div>
 
-      <!-- <v-file-input
+      <v-file-input
         show-size
         label="File input"
         @change="select"
       />
       <v-btn @click="sendFile">
         teste api
-      </v-btn> -->
+      </v-btn>
     </v-main>
   </v-app>
 </template>

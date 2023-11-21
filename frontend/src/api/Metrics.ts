@@ -14,6 +14,6 @@ export default {
         return axios.get("/qtdValorMovPorCoopAg");
     },
     credVsDebPorHora: () => {
-        return axios.get("/movPixDiaSemana");
+        return axios.get("/credVsDebPorHora");
     },
 };

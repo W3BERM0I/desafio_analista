@@ -13,7 +13,7 @@ onMounted( async () => {
         dias.push(dados[0].menor._id);
         dias.push(dados[0].maior._id);
 
-        valores.push(50000);
+        valores.push(dados[0].menor.count);
         valores.push(dados[0].maior.count);
     }));
 
@@ -43,7 +43,7 @@ onMounted( async () => {
             plugins: {
                 title: {
                     display: true,
-                    text: "Data com maior e menor soma de movimentações"
+                    text: "Data com maior e menor Quantidade de movimentações"
                 }
             },
         },

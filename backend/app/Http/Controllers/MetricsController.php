@@ -129,28 +129,28 @@ class MetricsController extends Controller
         $resultados = MovimentacaoConta::raw(function ($collection) {
             return $collection->aggregate([
                 [
-                    '$addFields' => [
-                        'formattedTime' => [
-                            '$dateFromString' => [
-                                'dateString' => '$hora',
-                                'format' => '%H:%M',
-                            ],
-                        ],
+                    '$project' => [
+                        'twoDigits' => ['$substr' => ['$hora', 0, 2]], // Ajuste 'yourColumn' para o nome real da sua coluna
+                        'credito' => '$credito', // Ajuste para o nome real da sua coluna de crédito
+                        'debito' => '$debito', // Ajuste para o nome real da sua coluna de débito
                     ],
                 ],
                 [
                     '$group' => [
-                        '_id' => '$formattedTime',
+                        '_id' => '$twoDigits',
+                        'totalCredito' => ['$sum' => '$credito'],
+                        'totalDebito' => ['$sum' => '$debito'],
+                    ],
+                ],
+                [
+                    '$sort' => [
+                        '_id' => 1,
                     ],
                 ],
             ]);
         });
-        
 
-        // $data['maior'] = $resultados->first();
-        // $data['menor'] = $resultados->last();
-
-        return response()->json([$data], 200);
+        return response()->json([$resultados], 200);
         
     }
 }
