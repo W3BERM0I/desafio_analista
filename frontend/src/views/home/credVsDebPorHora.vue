@@ -33,10 +33,10 @@ onMounted( async () => {
 
     const credito: number[] = [];
     const debito: number[] = [];
+    
     await MetricsApi.credVsDebPorHora().then((res => {
         const dados: any[] = res.data[0];
         dados.forEach(el => {
-            console.log(el);
             credito.push(el.totalCredito);
             debito.push(el.totalDebito);
         });

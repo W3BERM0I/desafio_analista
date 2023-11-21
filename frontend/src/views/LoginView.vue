@@ -11,23 +11,21 @@ s<template>
           v-model="validForm"
           :disabled="loading"
           class="login__form"
-          @submit.prevent=""
+          @submit.prevent="efetuarLogin"
         >
           <h1 class="login__title">
             Iniciar minha sessão
           </h1>
 
           <v-text-field
-            v-model="cpf_cnpj"
-            v-maska:[options]
-            label="CPF/CNPJ"
+            v-model="email"
+            label="e-mail"
             autofocus
             aria-label="Informe seu CPF ou CNPJ para entrar no sistema."
-            maxlength="18"
             variant="outlined"
             class="mb-3"
-            type="tel"
-            :rules="[rules.requiredCpfCnpj, rules.lengthCpfCnpj]"
+            type="email"
+            :rules="[rules.requiredEmail]"
           />
 
           <v-text-field
@@ -74,31 +72,38 @@ s<template>
 </template>
 
 <script setup lang="ts">
+import Auth from "@/api/Auth";
 import TheContainer from "@/components/shared/TheContainer.vue";
 
-import { ref, reactive } from "vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
 
 // import { useLoginStore } from "pioneira-ui";
 // import EntrarDadosView from "./entrar/EntrarDadosView.vue";
 
+const router = useRouter();
+
 const mostrarSenha = ref(false);
 const loading = ref(false);
 const validForm = ref(false);
+const email = ref("");
 const password = ref("");
-const cpf_cnpj = ref("");
 
 const rules = {
-    requiredCpfCnpj: (value: string) =>
-        !!value || "O campo do CPF/CNPJ é obrigatório.",
+    requiredEmail: (value: string) =>
+        !!value || "O campo do email é obrigatório.",
     requiredPassword: (value: string) =>
-        !!value || "O campo da senha é obrigatório.",
-    lengthCpfCnpj: (value: string) =>
-        value.length >= 14 || "O campo do CPF/CNPJ está incompleto.",
+        !!value || "O campo da senha é obrigatório."
 };
 
-const options = reactive({
-    mask: ["###.###.###-##", "##.###.###/####-##"],
-    eager: true,
+const efetuarLogin = ( async () => {
+    await Auth.login(email.value, password.value).then((res => {
+        console.log(res);
+        router.push({name: "Home"});
+    }));
+    console.log("loguei");
+    return;
 });
 </script>
 

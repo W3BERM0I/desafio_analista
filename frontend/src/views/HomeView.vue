@@ -118,7 +118,7 @@ const sidebarUserItems = [
                 // await loginApi.logout();
                 // loginStore.unsetCookies();
                 // userStore.unsetUserData();
-                // router.push({ name: "Entrar" });
+                router.push({ name: "Login" });
             } catch (error) {
                 //
             }

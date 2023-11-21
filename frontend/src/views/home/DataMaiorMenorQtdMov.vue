@@ -17,8 +17,6 @@ onMounted( async () => {
         valores.push(dados[0].maior.count);
     }));
 
-    console.log(dados);
-
     //label: "Data com maior e menor soma de movimentações",
     const data = {
         labels: dias,
