@@ -65,8 +65,8 @@ const sendFile = async () => {
     uploaded.value = false;
     const progressOnceRequest = 100 / files.length;
 
-    FileApi.startEnd().then((res => {
-        console.log("start/end");
+    FileApi.uploadStart().then((res => {
+        console.log("start");
     }));
     for (const fileChunck of files) {
         const formData = new FormData();
@@ -80,8 +80,8 @@ const sendFile = async () => {
         }));
     }
 
-    FileApi.startEnd().then((res => {
-        console.log("start/end");
+    FileApi.uploadEnd().then((res => {
+        console.log("end");
     }));
 
     loading.value = false;

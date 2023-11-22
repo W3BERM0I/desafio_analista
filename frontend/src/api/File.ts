@@ -8,7 +8,10 @@ export default {
             }
         });
     },
-    startEnd: () => {
-        return axios.get("/startEnd");
+    uploadStart: () => {
+        return axios.get("/uploadStart");
+    },
+    uploadEnd: () => {
+        return axios.get("/uploadEnd");
     },
 };

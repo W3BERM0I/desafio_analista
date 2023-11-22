@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Log;
+use App\Models\Log as LogModel;
 
 //use App\Enums\Actions;
 use App\Http\Controllers\Controller;
@@ -25,9 +25,10 @@ class LogController extends Controller
 
      public static function addsLog(string $id = null, string $acao, string $descricao = null):void
      {
+        info('server: ', [$_SERVER]);
          try {
-            Log::create([
-                 'id' => $id,
+            LogModel::create([
+                 'user_id' => $id,
                  'data/hora' => date('d/m/Y - H:i:s', $_SERVER['REQUEST_TIME']),
                  'ip' => $_SERVER['REMOTE_ADDR'],
                  'acao' => $acao, 

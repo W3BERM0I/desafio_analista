@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from "axios";
 import type {
     AxiosError,
     AxiosInstance,
@@ -31,20 +31,21 @@ const apiClient = axios.create({
 //     return Promise.reject(error);
 // });
 
-const onRequest = (
-    config: InternalAxiosRequestConfig
-): InternalAxiosRequestConfig => {
-    const loginStore = useLoginStore();
+// const onRequest = (
+//     config: InternalAxiosRequestConfig
+// ): InternalAxiosRequestConfig => {
+//     const userStore = useUserStore();
 
-    if (
-        config.url &&
-        config.headers &&
-        !loginStore.publicRoutes.includes(config.url)
-    )
-        config.headers["Authorization"] = loginStore.getToken();
 
-    return config;
-};
+//     if (
+//         config.url &&
+//         config.headers &&
+//         !loginStore.publicRoutes.includes(config.url)
+//     )
+//         config.headers["Authorization"] = loginStore.getToken();
+
+//     return config;
+// };
 
 
 
@@ -54,9 +55,9 @@ apiClient.interceptors.request.use((config: any) => {
     console.log(config);
 
     if(token)
-    // config.headers?.Authorization = `Bearer ${token}`;
+        config.headers["Authorization"] = `Bearer ${token}`;
 
-        return config;
+    return config;
 });
 
 // Interceptor de resposta
