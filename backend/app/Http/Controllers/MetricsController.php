@@ -47,19 +47,18 @@ class MetricsController extends Controller
                         'somaMov' => ['$sum' => ['$add' => ['$debito', '$credito']]],
                     ],
                 ],
-
-        [
-            '$sort' => [
-                'somaMov' => -1, // Use 1 for ascending order, -1 for descending order
-            ],
-        ],
+                [
+                    '$sort' => [
+                        'somaMov' => 1, // Use 1 for ascending order, -1 for descending order
+                    ],
+                ],
             ]);
         });
 
-        $data['maior'] = $resultados->first();
+        $data['menor'] = $resultados->first();
+        
+        $data['maior'] = $resultados->last();
 
-        // Acessar a data com a menor quantidade de movimentações
-        $data['menor'] = $resultados->last();
 
         return response()->json([$data], 200);
     }
@@ -67,11 +66,11 @@ class MetricsController extends Controller
     //Dia da semana em que houveram mais movimentações dos tipos (código de movimentação) “RX1” e “PX1”;
     public function movPixDiaSemana()
     {
-        $resultados = MovimentacaoConta::raw(function ($collection) {
+        $resultadosRx1 = MovimentacaoConta::raw(function ($collection) {
             return $collection->aggregate([
                 [
                     '$match' => [
-                        'cod' => ['$in' => ['RX1', 'PX1']], // Replace 'tes' with your specific description
+                        'cod' => ['$in' => ['RX1']], // Replace 'tes' with your specific description
                     ],
                 ],
                 [
@@ -98,8 +97,99 @@ class MetricsController extends Controller
             ]);
         });
 
+        $resultadosPx1 = MovimentacaoConta::raw(function ($collection) {
+            return $collection->aggregate([
+                [
+                    '$match' => [
+                        'cod' => ['$in' => ['PX1']], // Replace 'tes' with your specific description
+                    ],
+                ],
+                [
+                    '$addFields' => [
+                        'formattedDate' => [
+                            '$dateFromString' => [
+                                'dateString' => '$data',
+                                'format' => '%d/%m/%Y',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    '$group' => [
+                        '_id' => ['$dayOfWeek' => '$formattedDate'],
+                        'count' => ['$sum' => 1],
+                    ],
+                ],
+                [
+                    '$sort' => [
+                        '_id' => 1,
+                    ],
+                ],
+            ]);
+        });
+
+        $resultados = [];
+        $resultados['px1'] = $resultadosPx1;
+        $resultados['rx1'] = $resultadosRx1;
+
         return response()->json([$resultados], 200);
     }
+
+    public function compararCodigosPorDiaDaSemana()
+{
+    $codigo1 = 'RX1';
+    $codigo3 = 'PX1';
+
+    $resultado = MovimentacaoConta::raw(function ($collection) use ($codigo1, $codigo3) {
+        return $collection->aggregate([
+            [
+                '$match' => [
+                    'cod' => ['$in' => [$codigo1, $codigo3]],
+                ],
+            ],
+            [
+                '$addFields' => [
+                    'formattedDate' => [
+                        '$dateFromString' => [
+                            'dateString' => '$data',
+                            'format' => '%d/%m/%Y',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                '$group' => [
+                    '_id' => [
+                        'cod' => '$codigo',
+                        'dayOfWeek' => '$formattedDate'
+                    ],
+                    'quantidade' => ['$sum' => 1],
+                ],
+            ],
+            [
+                '$project' => [
+                    '_id' => 0,
+                    'codigo' => '$_id.cod',
+                    'dia_da_semana' => '$_id.dayOfWeek',
+                    'quantidade' => '$quantidade',
+                ],
+            ],
+        ]);
+    });
+
+    // Organizar o resultado em um array associativo para facilitar o acesso
+    $resultadosFinais = [];
+    foreach ($resultado as $item) {
+        $codigo = $item->codigo;
+        $diaDaSemana = $item->dia_da_semana;
+        $quantidade = $item->quantidade;
+
+        // Criar array associativo com a contagem para cada código e dia da semana
+        $resultadosFinais[$codigo][$diaDaSemana] = $quantidade;
+    }
+
+    return response()->json($resultado);
+}
 
     //Quantidade e valor movimentado por coop/agência;
     public function qtdValorMovPorCoopAg()
@@ -110,6 +200,8 @@ class MetricsController extends Controller
                     '$group' => [
                         '_id' => '$origem',
                         'somaMov' => ['$sum' => ['$add' => ['$debito', '$credito']]],
+                        'quantidade' => ['$sum' => 1],
+
                     ],
                 ],
                 [
@@ -123,6 +215,33 @@ class MetricsController extends Controller
         return response()->json([$resultados], 200);
     }
 
+    //Quantidade e valor movimentado por coop/agência;
+    public function qtdValorMovPorCoopAgprev()
+    {
+        $resultados = MovimentacaoConta::raw(function ($collection) {
+            return $collection->aggregate([
+                [
+                    '$group' => [
+                        '_id' => '$origem',
+                        'somaMov' => ['$sum' => ['$add' => ['$debito', '$credito']]],
+                        'quantidade' => ['$sum' => 1],
+
+                    ],
+                ],
+                [
+                    '$sort' => [
+                        'somaMov' => -1,
+                    ],
+                ],
+                [
+                    '$limit' => 4,
+                ],
+            ]);
+        });
+    
+        return response()->json([$resultados], 200);
+    }
+    
     //Relação de créditos x débitos ao longo das horas do dia (valores fechados por hora. Ex: das 9h às 10h, das 10h às 11h, etc);  
     public function credVsDebPorHora()
     {

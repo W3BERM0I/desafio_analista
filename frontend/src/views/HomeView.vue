@@ -18,23 +18,13 @@
           <acoes-componente class="resultado__dashbord elevation-4" />
         </div>
       </div>
-
-      <v-file-input
-        show-size
-        label="File input"
-        @change="select"
-      />
-      <v-btn @click="sendFile">
-        teste api
-      </v-btn>
     </v-main>
   </v-app>
 </template>
     
 <script lang="ts" setup>
-import FileApi from "@/api/File";
-import { ref, reactive } from "vue";
-
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/user";
 import credVsDebPorHora from "./home/credVsDebPorHora.vue";
 import DataMaiorMenorQtdMov from "./home/DataMaiorMenorQtdMov.vue";
 import DataMaiorMenorSomaMov from "./home/DataMaiorMenorSomaMov.vue";
@@ -42,48 +32,10 @@ import movPixDiaSemana from "./home/movPixDiaSemana.vue";
 import qtdValorMovPorCoopAg from "./home/QtdValorMovPorCoopAg.vue";
 import AcoesComponente from "./home/AcoesComponente.vue";
     
-const file = ref("");
-const files = reactive([]);
-  
-const select = (event) => {
-    file.value = event?.target.files.item(0);
-    createChunks();
-};
-  
-const createChunks = () => {
-    files.length = 0; //limpa o array com os arquivos quebrados, caso haja algo dentro
-    const size = 1024 * 1024 * 2; // tamanho de cada arquivo
-    const chunks = Math.ceil(file.value.size / size); // calculo para saber em quantas partes de 2mb o arquivo vai precisar ser quebrada
-  
-    for (let i = 0; i < chunks; i++) {
-        files.push(file.value.slice(
-            i * size,
-            Math.min(i * size + size, file.value.size),
-            file.value.type
-        ));
-    }
-};
-  
-const sendFile = async () => {
-    FileApi.startEnd().then((res => {
-        console.log("start/end");
-    }));
-    for (const fileChunck of files) {
-        const formData = new FormData();
-        formData.append("name", file.value.name);
-        formData.append("file", fileChunck);
-        await FileApi.upload(formData).then((res => {
-            console.log(res);
-        })).catch((err => {
-            console.error(err);
-        }));
-    }
 
-    FileApi.startEnd().then((res => {
-        console.log("start/end");
-    }));
-};
-
+const userStore = useUserStore();
+const router = useRouter();
+  
 const sidebarItems = [
     {
         icon: "upload",
@@ -116,8 +68,7 @@ const sidebarUserItems = [
         action: async () => {
             try {
                 // await loginApi.logout();
-                // loginStore.unsetCookies();
-                // userStore.unsetUserData();
+                userStore.unsetUserData();
                 router.push({ name: "Login" });
             } catch (error) {
                 //

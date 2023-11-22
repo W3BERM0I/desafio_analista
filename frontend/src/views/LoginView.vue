@@ -1,4 +1,4 @@
-s<template>
+<template>
   <TheContainer>
     <template #out>
       <div class="login">
@@ -69,26 +69,48 @@ s<template>
       </div>
     </template>
   </TheContainer>
+
+  <v-snackbar
+    v-model="snackbar"
+    multi-line
+    color="red"
+    rounded="pill"
+    :timeout="4000"
+    elevation="24"
+    variant="tonal"
+  >
+    email ou senha invalidos
+
+    <template #actions>
+      <v-btn
+        color="red"
+        variant="text"
+        @click="snackbar = false"
+      >
+        Close
+      </v-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
 import Auth from "@/api/Auth";
 import TheContainer from "@/components/shared/TheContainer.vue";
+import { useUserStore } from "@/store/user";
 
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-
-
-// import { useLoginStore } from "pioneira-ui";
-// import EntrarDadosView from "./entrar/EntrarDadosView.vue";
+import { UserData } from "@/types";
 
 const router = useRouter();
+const userStore = useUserStore();
 
 const mostrarSenha = ref(false);
 const loading = ref(false);
 const validForm = ref(false);
 const email = ref("");
 const password = ref("");
+const snackbar = ref(false);
 
 const rules = {
     requiredEmail: (value: string) =>
@@ -98,11 +120,16 @@ const rules = {
 };
 
 const efetuarLogin = ( async () => {
+    //await Auth.createUser(email.value, password.value).then((res => {
     await Auth.login(email.value, password.value).then((res => {
-        console.log(res);
+      
+        console.log(res.data);
+        userStore.setUserData(res.data as UserData);
+        console.log(userStore.user);
         router.push({name: "Home"});
+    })).catch((err => {
+        snackbar.value = true;
     }));
-    console.log("loguei");
     return;
 });
 </script>

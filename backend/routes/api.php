@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MetricsController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('startEnd', function () {
     info('start/stop');
+    // Cache::delete('duasLinhas');
+    // Cache::delete('dadosAux');
+    // Cache::delete('coopAg');
     return response()->json('cheguei', 200);
 });
 
@@ -35,7 +39,9 @@ Route::get('index', [FileController::class, 'index']);
 
 Route::get('DataMaiorMenorQtdMov', [MetricsController::class, 'DataMaiorMenorQtdMov']);
 Route::get('DataMaiorMenorSomaMov', [MetricsController::class, 'DataMaiorMenorSomaMov']);
+// Route::get('movPixDiaSemana', [MetricsController::class, 'compararCodigosPorDiaDaSemana']);
 Route::get('movPixDiaSemana', [MetricsController::class, 'movPixDiaSemana']);
 Route::get('qtdValorMovPorCoopAg', [MetricsController::class, 'qtdValorMovPorCoopAg']);
+Route::get('qtdValorMovPorCoopAgPrev', [MetricsController::class, 'qtdValorMovPorCoopAgPrev']);
 Route::get('credVsDebPorHora', [MetricsController::class, 'credVsDebPorHora']);
 

@@ -1,53 +1,48 @@
 <script setup lang="ts">
-import Chart from "chart.js/auto";
 import { onMounted } from "vue";
 import MetricsApi from "@/api/Metrics";
+import { reactive } from "vue";
 
+const dados = reactive([]);
 onMounted(async () => {
-    const mov: any[] = [];
-    await MetricsApi.qtdValorMovPorCoopAg().then((res => {
-        const dados: any[] = res.data[0];
-        // console.log(dados);
-
-        // dados.forEach(el => {
-        //     mov.push(el.count);
-        // });
+    await MetricsApi.qtdValorMovPorCoopAgPrev().then((res => {
+        dados.push(...res.data[0]);
     }));
-
-    const labels = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June"
-    ];
-
-    const data = {
-        labels: labels,
-        datasets: [{
-            label: "Quantidade de valor movimentado por coop/ag",
-            backgroundColor: "rgb(255, 99, 132)",
-            borderColor: "rgb(255, 99, 132)",
-            data: [0, 10, 5, 2, 20, 30, 45]
-        }]
-    };
-
-    const config = {
-        type: "line",
-        data: data,
-        options: {}
-    };
-
-    const myChart = new Chart(
-        document.getElementById("grafico5"),
-        config
-    );
 });
 </script>
 
 <template>
-  <div>
-    <canvas id="grafico5" />
+  <div class="container__ag">
+    <!-- <canvas id="grafico5" /> -->
+    <p>4 agencias que mais tiveram soma de movimentações</p>
+    <div class="container__dados">
+      <div
+        v-for="(dado, index) in dados"
+        :key="index"
+      >
+        <p>coop/ag: {{ dado._id }}</p>
+        <p>soma: {{ dado.somaMov }}</p>
+        <p>quantidade: {{ dado.quantidade }}</p>
+      </div>
+    </div>
   </div>
 </template>
+
+<style>
+.container__ag {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.container__dados {
+  display: grid;
+  grid-template-rows: 1fr 1fr; /* Duas linhas igualmente divididas */
+  grid-template-columns: 1fr 1fr; /* Três colunas igualmente divididas */
+  grid-gap: 10px;
+
+  max-width: 95%;
+  max-height: 95%;
+}
+</style>

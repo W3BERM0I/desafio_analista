@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\User;
+use App\Enums\Privileges;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -24,12 +25,15 @@ class AdminController extends Controller
         ];
            
         $request->validate($rules, $messages);
+        info('pv: ', [Privileges::COMMON->value]);
 
         try{
-            $newUser = new User();
-            $newUser->email = $request->email;
-            $newUser->password = Hash::make($request->password);
-            $newUser->save();
+            $newUser = [];
+            $newUSer['email'] = $request->email;
+            $newUSer['password'] = $request->password;
+            $newUSer['privileges'] = Privileges::COMMON->value;
+
+            User::create($newUSer);
         } catch (Exception $err) {
             Log::error('Erro ao criar USUARIO no banco', [
                 'erro' => $err

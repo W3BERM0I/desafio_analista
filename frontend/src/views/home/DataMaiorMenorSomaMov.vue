@@ -21,7 +21,7 @@ onMounted( async () => {
         labels: dias,
         datasets: [{
             label: "",
-            backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)"],
+            backgroundColor: ["#5a645a", "#3fa110"],
             data: [...valores]
         }],
     };

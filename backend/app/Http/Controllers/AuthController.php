@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Enums\Privileges;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -28,10 +28,14 @@ class AuthController extends Controller
         if (Auth::attempt($request->only(['email', 'password']))) {
             $user = Auth::user();
             $token = $user->createToken('etl');
-            info("cheguei: ", [$token]);
-    
-            return response()->json(['token' => $token->plainTextToken]);
+            info("cheguei: ", [$user->privileges]);
+            $admin = false;
+
+            if($user->privileges === Privileges::ADMIN->value || $user->privileges === Privileges::SUPER_ADMIN->value)
+                $admin = !$admin;
+        
+            return response()->json(['token' => $token->plainTextToken, 'admin' => $admin]);
         }
-        return response()->json(['erro']);
+        return response()->json(['erro'], 401);
     }
 }

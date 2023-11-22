@@ -53,10 +53,12 @@ class FileController extends Controller
         //2 linhas
         $duasLinhas = false;
 
+        $linhaAnterior = '';
+        $aux = '';
+
         // verifica se ja começou a ler uma linha no final do ultimo arquivo
         if(Cache::has('duasLinhas')) {
-            Cache::delete('duasLinhas');
-            $duasLinhas = !$duasLinhas;
+            $duasLinhas = true;
             $dadosAux = Cache::get('dadosAux');
         }
 
@@ -64,11 +66,11 @@ class FileController extends Controller
         if(Cache::has('coopAg'))
             $coopAg = Cache::get('coopAg');
 
-        foreach ($linhas as $linha) {
-            if($duasLinhas) {            
-                $dadosAux['id'] = $dadosAux['id'] ? $dadosAux['id'] : trim(substr($linha, 130, 2));
+        foreach ($linhas as $linha) { 
+            if($duasLinhas) {    
+                $dadosAux['id'] = $dadosAux['id'] ?: trim(substr($linha, 130, 2));
 
-                $dadosAux['debito'] = $dadosAux['debito'] ? $dadosAux['debito'] : $this->formamaStringDinheiro(trim(substr($linha, 99, 13)));
+                $dadosAux['debito'] = $dadosAux['debito'] ?: $this->formamaStringDinheiro(trim(substr($linha, 99, 13)));
 
                 $dataHora = trim(substr($linha, 116, 16));
 
@@ -76,7 +78,7 @@ class FileController extends Controller
                     $dataHora = explode(' ', $dataHora);
                     $dadosAux['data'] = $dataHora[0];
                     $dadosAux['hora'] = $dataHora[1];
-                    
+
                     $dados[] = [
                             'origem' => $dadosAux['origem'],
                             'conta' => $dadosAux['conta'],
@@ -93,10 +95,11 @@ class FileController extends Controller
                         ];
     
                     $duasLinhas = !$duasLinhas;
-                            
                     $dadosAux = [];
                     continue;
                 }
+                $ultimoDadosAux = $dadosAux;
+
                 continue;  
             }
 
@@ -104,8 +107,6 @@ class FileController extends Controller
 
 
             if(preg_match('/^\d{5}-\d$/', $dadosAux['conta'])) {
-
-               //verifica se a variavel o campo da origem esta vazio e se estiver vazio pega o valor do ultima campo preenchido
                $origem = trim(substr($linha, 0, 7));
 
                // verifica se tem uma nova coop/ag na transação atual se tenho que pegar da transacao passada
@@ -136,9 +137,14 @@ class FileController extends Controller
             }
         }
 
+
+
         if($duasLinhas) {
             Cache::put('dadosAux', $ultimoDadosAux, (5 * 60)); // 5 minutos
             Cache::put('duasLinhas', $duasLinhas, (5 * 60)); // 5 minutos
+        } else {
+            Cache::delete('duasLinhas');
+            Cache::delete('dadosAux');
         }
         
         if($ultimaCoopAg) Cache::put('coopAg', $ultimaCoopAg, (5 * 60)); // 5 minutos

@@ -33,7 +33,6 @@ onMounted( async () => {
 
     const credito: number[] = [];
     const debito: number[] = [];
-    
     await MetricsApi.credVsDebPorHora().then((res => {
         const dados: any[] = res.data[0];
         dados.forEach(el => {
@@ -42,19 +41,18 @@ onMounted( async () => {
         });
     }));
 
-
     const data = {
         labels: labels,
         datasets: [{
             label: "Credito",
-            backgroundColor: "rgb(255, 99, 132)",
-            borderColor: "rgb(255, 99, 132)",
+            backgroundColor: "#ffcd00",
+            borderColor: "#ffcd00",
             data: credito
         }, 
         {
             label: "debito",
-            backgroundColor: "rgb(255, 53, 32)",
-            borderColor: "rgb(255, 53, 32)",
+            backgroundColor: "#5a645a",
+            borderColor: "#5a645a",
             data: debito
         }]
     };
@@ -81,6 +79,8 @@ onMounted( async () => {
 
 <template>
   <div>
-    <canvas id="grafico1" />
+    <canvas
+      id="grafico1"
+    />
   </div>
 </template>

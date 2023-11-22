@@ -13,6 +13,9 @@ export default {
     qtdValorMovPorCoopAg: () => {
         return axios.get("/qtdValorMovPorCoopAg");
     },
+    qtdValorMovPorCoopAgPrev: () => {
+        return axios.get("/qtdValorMovPorCoopAgPrev");
+    },
     credVsDebPorHora: () => {
         return axios.get("/credVsDebPorHora");
     },

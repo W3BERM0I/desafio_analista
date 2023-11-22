@@ -5,11 +5,17 @@ import MetricsApi from "@/api/Metrics";
 import { onBeforeMount } from "vue";
 
 onMounted(async () => { 
-    const mov: number[] = [];
+    const PX1: number[] = [];
+    const RX1: number[] = [];
     await MetricsApi.movPixDiaSemana().then((res => {
         const dados: any[] = res.data[0];
-        dados.forEach(el => {
-            mov.push(el.count);
+
+        dados.px1.forEach(el => {
+            PX1.push(el.count);
+        });
+
+        dados.rx1.forEach(el => {
+            RX1.push(el.count);
         });
     }));
 
@@ -24,53 +30,25 @@ onMounted(async () => {
     ];
 
     const data = {
-        labels: [
-            "Domingo",
-            "Segunda",
-            "Terça",
-            "Quarta",
-            "Quinta",
-            "Sexta",
-            "Sabado",
-        ],
+        labels: labels,
         datasets: [{
-            label: labels,
-            data: mov,
-            backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(255, 159, 64, 0.2)",
-                "rgba(255, 205, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(153, 102, 255, 0.2)",
-                "rgba(201, 203, 207, 0.2)",
-                "rgba(201, 203, 207, 0.2)",
-            ],
-            borderColor: [
-                "rgb(255, 99, 132)",
-                "rgb(255, 159, 64)",
-                "rgb(255, 205, 86)",
-                "rgb(75, 192, 192)",
-                "rgb(54, 162, 235)",
-                "rgb(153, 102, 255)",
-                "rgb(201, 203, 207)",
-                "rgb(201, 203, 207)",
-            ],
-            borderWidth: 1
+            label: "RX1",
+            backgroundColor: "#ffcd00",
+            borderColor: "#ffcd00",
+            data: RX1
+        }, 
+        {
+            label: "PX1",
+            backgroundColor: "#5a645a)",
+            borderColor: "#5a645a",
+            data: PX1
         }]
     };
 
     const config = {
-        type: "bar",
+        type: "line",
         data: data,
         options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            layout: {
-            },
             plugins: {
                 title: {
                     display: true,
@@ -79,13 +57,6 @@ onMounted(async () => {
             },
         },
     };
-
-    // const config = {
-    //   type: 'doughnut',
-    //   data: data,
-    // };
-
-
 
     const myChart = new Chart(
         document.getElementById("grafico4"),
