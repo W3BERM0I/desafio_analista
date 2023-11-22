@@ -2,20 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\MovimentacaoConta;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Cache;
 
 class FileController extends Controller
 {
-    public function index()
+    public function uploadStart()
     {
-        //User::insert(['email' => 'moisesweber01@gmail.com', 'password' => (Hash::make('@Sicredi23'))]);
-        return response()->json([MovimentacaoConta::where('lctos', "<>", 0)->first()], 200);
+        $user = Auth::user();
+        LogController::addsLog($user->id, 'start_upload');
+        return response()->json(['carregamento iniciado'], 201);
+    }
+
+    public function uploadEnd()
+    {
+        $user = Auth::user();
+        LogController::addsLog($user->id, 'start_upload');
+        return response()->json(['carregamento finalizado'], 201);
     }
 
 

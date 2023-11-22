@@ -23,25 +23,30 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('startEnd', function () {
-    info('start/stop');
-    // Cache::delete('duasLinhas');
-    // Cache::delete('dadosAux');
-    // Cache::delete('coopAg');
-    return response()->json('cheguei', 200);
-});
-
 Route::post('login', [AuthController::class, 'login']);
 Route::post('createUser', [AdminController::class, 'createUser']);
 
-Route::post('upload', [FileController::class, 'store'])->middleware('cors')->withoutMiddleware('throttle:api');
-Route::get('index', [FileController::class, 'index']);
+// Route::get('startEnd', function () {
+//     info('start/stop');
+//     // Cache::delete('duasLinhas');
+//     // Cache::delete('dadosAux');
+//     // Cache::delete('coopAg');
+//     return response()->json('cheguei', 200);
+// });
 
-Route::get('DataMaiorMenorQtdMov', [MetricsController::class, 'DataMaiorMenorQtdMov']);
-Route::get('DataMaiorMenorSomaMov', [MetricsController::class, 'DataMaiorMenorSomaMov']);
-// Route::get('movPixDiaSemana', [MetricsController::class, 'compararCodigosPorDiaDaSemana']);
-Route::get('movPixDiaSemana', [MetricsController::class, 'movPixDiaSemana']);
-Route::get('qtdValorMovPorCoopAg', [MetricsController::class, 'qtdValorMovPorCoopAg']);
-Route::get('qtdValorMovPorCoopAgPrev', [MetricsController::class, 'qtdValorMovPorCoopAgPrev']);
-Route::get('credVsDebPorHora', [MetricsController::class, 'credVsDebPorHora']);
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('uploadStart', [FileController::class, 'uploadStart']);
+    Route::get('uploadEnd', [FileController::class, 'uploadEnd']);
+    Route::post('upload', [FileController::class, 'store'])->middleware('cors')->withoutMiddleware('throttle:api');
+    Route::get('DataMaiorMenorQtdMov', [MetricsController::class, 'DataMaiorMenorQtdMov']);
+    Route::get('DataMaiorMenorSomaMov', [MetricsController::class, 'DataMaiorMenorSomaMov']);
+    // Route::get('movPixDiaSemana', [MetricsController::class, 'compararCodigosPorDiaDaSemana']);
+    Route::get('movPixDiaSemana', [MetricsController::class, 'movPixDiaSemana']);
+    Route::get('qtdValorMovPorCoopAg', [MetricsController::class, 'qtdValorMovPorCoopAg']);
+    Route::get('qtdValorMovPorCoopAgPrev', [MetricsController::class, 'qtdValorMovPorCoopAgPrev']);
+    Route::get('credVsDebPorHora', [MetricsController::class, 'credVsDebPorHora']);
+
+
+});
+
 

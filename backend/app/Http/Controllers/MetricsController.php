@@ -136,60 +136,60 @@ class MetricsController extends Controller
     }
 
     public function compararCodigosPorDiaDaSemana()
-{
-    $codigo1 = 'RX1';
-    $codigo3 = 'PX1';
+    {
+        $codigo1 = 'RX1';
+        $codigo3 = 'PX1';
 
-    $resultado = MovimentacaoConta::raw(function ($collection) use ($codigo1, $codigo3) {
-        return $collection->aggregate([
-            [
-                '$match' => [
-                    'cod' => ['$in' => [$codigo1, $codigo3]],
+        $resultado = MovimentacaoConta::raw(function ($collection) use ($codigo1, $codigo3) {
+            return $collection->aggregate([
+                [
+                    '$match' => [
+                        'cod' => ['$in' => [$codigo1, $codigo3]],
+                    ],
                 ],
-            ],
-            [
-                '$addFields' => [
-                    'formattedDate' => [
-                        '$dateFromString' => [
-                            'dateString' => '$data',
-                            'format' => '%d/%m/%Y',
+                [
+                    '$addFields' => [
+                        'formattedDate' => [
+                            '$dateFromString' => [
+                                'dateString' => '$data',
+                                'format' => '%d/%m/%Y',
+                            ],
                         ],
                     ],
                 ],
-            ],
-            [
-                '$group' => [
-                    '_id' => [
-                        'cod' => '$codigo',
-                        'dayOfWeek' => '$formattedDate'
+                [
+                    '$group' => [
+                        '_id' => [
+                            'cod' => '$codigo',
+                            'dayOfWeek' => '$formattedDate'
+                        ],
+                        'quantidade' => ['$sum' => 1],
                     ],
-                    'quantidade' => ['$sum' => 1],
                 ],
-            ],
-            [
-                '$project' => [
-                    '_id' => 0,
-                    'codigo' => '$_id.cod',
-                    'dia_da_semana' => '$_id.dayOfWeek',
-                    'quantidade' => '$quantidade',
+                [
+                    '$project' => [
+                        '_id' => 0,
+                        'codigo' => '$_id.cod',
+                        'dia_da_semana' => '$_id.dayOfWeek',
+                        'quantidade' => '$quantidade',
+                    ],
                 ],
-            ],
-        ]);
-    });
+            ]);
+        });
 
-    // Organizar o resultado em um array associativo para facilitar o acesso
-    $resultadosFinais = [];
-    foreach ($resultado as $item) {
-        $codigo = $item->codigo;
-        $diaDaSemana = $item->dia_da_semana;
-        $quantidade = $item->quantidade;
+        // Organizar o resultado em um array associativo para facilitar o acesso
+        $resultadosFinais = [];
+        foreach ($resultado as $item) {
+            $codigo = $item->codigo;
+            $diaDaSemana = $item->dia_da_semana;
+            $quantidade = $item->quantidade;
 
-        // Criar array associativo com a contagem para cada código e dia da semana
-        $resultadosFinais[$codigo][$diaDaSemana] = $quantidade;
+            // Criar array associativo com a contagem para cada código e dia da semana
+            $resultadosFinais[$codigo][$diaDaSemana] = $quantidade;
+        }
+
+        return response()->json($resultado);
     }
-
-    return response()->json($resultado);
-}
 
     //Quantidade e valor movimentado por coop/agência;
     public function qtdValorMovPorCoopAg()
