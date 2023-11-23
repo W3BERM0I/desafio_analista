@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
+    public function verifyBase()
+    {
+       if(MovimentacaoConta::count() === 0)
+        return response()->json(['status' => false], 200);
+       
+       return response()->json(['status' => true], 200);
+       
+
+
+    }
+    
     public function uploadStart()
     {
         $user = Auth::user();

@@ -35,14 +35,15 @@ onMounted( async () => {
                     beginAtZero: true
                 }
             },
-            layout: {
-            },
 
             plugins: {
                 title: {
                     display: true,
                     text: "Data com maior e menor soma de movimentações"
-                }
+                },
+                legend: {
+                    display: false
+                },
             },
         },
     };

@@ -14,4 +14,7 @@ export default {
     uploadEnd: () => {
         return axios.get("/uploadEnd");
     },
+    verifyBase: () => {
+        return axios.get("/verifyBase");
+    },
 };

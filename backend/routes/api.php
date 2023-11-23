@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function() {
     
     Route::get('logout', [AuthController::class, 'logout']);
 
+    Route::get('verifyBase', [FileController::class, 'verifyBase']);
     Route::get('uploadStart', [FileController::class, 'uploadStart']);
     Route::get('uploadEnd', [FileController::class, 'uploadEnd']);
     Route::post('upload', [FileController::class, 'store'])->middleware('cors')->withoutMiddleware('throttle:api');

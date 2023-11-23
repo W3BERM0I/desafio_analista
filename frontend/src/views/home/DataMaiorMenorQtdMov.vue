@@ -36,13 +36,14 @@ onMounted( async () => {
                     beginAtZero: true
                 }
             },
-            layout: {
-            },
             plugins: {
                 title: {
                     display: true,
                     text: "Data com maior e menor Quantidade de movimentações"
-                }
+                },
+                legend: {
+                    display: false
+                },
             },
         },
     };

@@ -5,13 +5,28 @@
       <div
         class="main__dashbord"
       >
-        <div class="container__dashbord">
+        <div
+          v-if="status"
+          class="container__dashbord"
+        >
           <cred-vs-deb-por-hora class="resultado__dashbord elevation-4" />
           <data-maior-menor-qtd-mov class="resultado__dashbord elevation-4" />
           <data-maior-menor-soma-mov class="resultado__dashbord elevation-4" />
           <mov-pix-dia-semana class="resultado__dashbord elevation-4" />
           <qtd-valor-mov-por-coop-ag class="resultado__dashbord elevation-4" />
           <acoes-componente class="resultado__dashbord elevation-4" />
+        </div>
+        <div 
+          v-else
+          class="container__dashbord1"
+        >
+          <acoes-componente class="resultado__dashbord elevation-4" />
+          <v-btn
+            style="margin-top: 40px; margin-left: 30px;"
+            @click="reload"
+          >
+            atualizar pagina a upload do arquivo
+          </v-btn>
         </div>
       </div>
     </v-main>
@@ -26,6 +41,21 @@ import movPixDiaSemana from "./home/movPixDiaSemana.vue";
 import qtdValorMovPorCoopAg from "./home/QtdValorMovPorCoopAg.vue";
 import AcoesComponente from "./home/AcoesComponente.vue";
 import NavBar from "@/components/shared/NavBar.vue";  
+import { onMounted, ref } from "vue";
+import FileApi from "@/api/File";
+
+const status = ref(null);
+
+const reload = () => {
+    location.reload();
+};
+
+onMounted(async () => { 
+    const res = await FileApi.verifyBase();
+    status.value = res.data.status;
+
+});
+
 </script>
     
 <style>
@@ -55,4 +85,12 @@ import NavBar from "@/components/shared/NavBar.vue";
     align-items: center;
     justify-content: center;
 }
+
+.resultado__dashbord1 {
+  margin: 0;
+  height: 100vh; /* Isso garante que o contêiner ocupe toda a altura da tela. */
+  display: grid;
+  place-items: center;
+}
+
 </style>
