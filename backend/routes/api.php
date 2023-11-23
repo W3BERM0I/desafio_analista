@@ -26,14 +26,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('login', [AuthController::class, 'login']);
 Route::get('logout', [AuthController::class, 'logout']);
 Route::post('createUser', [AdminController::class, 'createUser']);
-
-// Route::get('startEnd', function () {
-//     info('start/stop');
-//     // Cache::delete('duasLinhas');
-//     // Cache::delete('dadosAux');
-//     // Cache::delete('coopAg');
-//     return response()->json('cheguei', 200);
-// });
+Route::post('deleteUser', [AdminController::class, 'deleteUser']);
+Route::get('allCommonUser', [AdminController::class, 'allCommonUser']);
 
 Route::middleware('auth:sanctum')->group(function() {
     Route::get('uploadStart', [FileController::class, 'uploadStart']);
@@ -46,8 +40,6 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('qtdValorMovPorCoopAg', [MetricsController::class, 'qtdValorMovPorCoopAg']);
     Route::get('qtdValorMovPorCoopAgPrev', [MetricsController::class, 'qtdValorMovPorCoopAgPrev']);
     Route::get('credVsDebPorHora', [MetricsController::class, 'credVsDebPorHora']);
-
-
 });
 
 

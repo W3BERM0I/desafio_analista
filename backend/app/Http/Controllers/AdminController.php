@@ -25,7 +25,8 @@ class AdminController extends Controller
         ];
            
         $request->validate($rules, $messages);
-        info('pv: ', [Privileges::COMMON->value]);
+
+        
 
         try{
             $newUser = [];
@@ -43,6 +44,30 @@ class AdminController extends Controller
         }
 
         return response('Usuário cadastrado com sucesso', 201);
+    }
+
+    public function deleteUser(Request $request)
+    {
+        $rules = [
+            'email' => 'required|email',
+        ];
+           
+        $messages = [
+            'email.required' => 'O campo de email é obrigatório.',
+            'email.email' => 'Por favor, insira um endereço de email válido.',
+        ];
+           
+        $request->validate($rules, $messages);
+        
+        User::where('email', $request->email)->delete();
+        return response('Usuário removido com sucesso', 201);
+    }
+
+    public function allCommonUser(Request $request)
+    {
+        $user = User::select('email')->where('privileges', Privileges::COMMON->value)->get();
+        return response()->json(['users' => $user], 201);
+
     }
     
 }

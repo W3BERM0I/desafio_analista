@@ -5,7 +5,26 @@
     :sidebar-user-items="sidebarUserItems"
   />
 
-  <add-user :flag="AddUserUserFlag" />
+  <v-row justify="center">
+    <v-dialog
+      v-model="dialogAddUser"
+      persistent
+      width="1024"
+    >
+      <add-user 
+        @close="dialogAddUser = false"
+      />
+    </v-dialog>
+    <v-dialog
+      v-model="dialogDeleteUser"
+      scrollable
+      width="auto"
+    >
+      <delete-user 
+        @close="dialogDeleteUser = false"
+      />
+    </v-dialog>
+  </v-row>
 </template>
 
 <script lang="ts" setup>
@@ -13,12 +32,14 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/user";
 import Auth from "@/api/Auth";
 import AddUser from "../admin/AddUser.vue";
+import DeleteUser from "../admin/DeleteUser.vue";
 import { ref } from "vue";
 
 const userStore = useUserStore();
 const router = useRouter();
 
-const AddUserUserFlag = ref(false);
+const dialogDeleteUser = ref(false);
+const dialogAddUser = ref(false);
 
 const sidebarItems = [
     {
@@ -38,12 +59,12 @@ if(!userStore.user.admin) {
                 {
                     icon: "check",
                     text: "Adicionar usuario",
-                    action: () => (AddUserUserFlag.value = true),
+                    action: () => (dialogAddUser.value = true),
                 },
                 {
                     icon: "xmark",
                     text: "Excluir usuario",
-                    action: () => (alert("cheguei")),
+                    action: () => (dialogDeleteUser.value = true),
                 },
             ],
         },);
