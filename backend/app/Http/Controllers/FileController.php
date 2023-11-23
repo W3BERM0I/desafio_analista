@@ -16,6 +16,7 @@ class FileController extends Controller
     public function uploadStart()
     {
         $user = Auth::user();
+
         LogController::addsLog($user->id, 'start_upload');
         return response()->json(['carregamento iniciado'], 201);
     }
@@ -23,7 +24,7 @@ class FileController extends Controller
     public function uploadEnd()
     {
         $user = Auth::user();
-        LogController::addsLog($user->id, 'start_upload');
+        LogController::addsLog($user->id, 'end_upload');
         return response()->json(['carregamento finalizado'], 201);
     }
 

@@ -85,6 +85,8 @@
       <v-btn
         color="red"
         variant="text"
+        :disabled="loading"
+        :loading="loading"
         @click="snackbar = false"
       >
         Close
@@ -121,14 +123,16 @@ const rules = {
 
 const efetuarLogin = ( async () => {
     //await Auth.createUser(email.value, password.value).then((res => {
+    loading.value = !loading.value;
     await Auth.login(email.value, password.value).then((res => {
-      
-        console.log(res.data);
         userStore.setUserData(res.data as UserData);
         console.log(userStore.user);
+        loading.value = !loading.value;
+
         router.push({name: "Home"});
     })).catch((err => {
         snackbar.value = true;
+        loading.value = !loading.value;
     }));
     return;
 });

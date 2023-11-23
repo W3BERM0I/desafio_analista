@@ -4,8 +4,8 @@
 2. docker compose up -d
 3. docker exec -it etl-conta_backend bash
 4. composer install
-5. php artisan migrate:fresh
-6. php artisan key:generate
+5. php artisan key:generate
+6. php artisan migrate:fresh
 
 # REFERENCIAS
 

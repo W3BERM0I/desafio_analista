@@ -1,11 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <PNavigation
-        home-link="login"
-        :sidebar-items="sidebarItems"
-        :sidebar-user-items="sidebarUserItems"
-      />
+      <nav-bar />
       <div
         class="main__dashbord"
       >
@@ -23,59 +19,13 @@
 </template>
     
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
-import { useUserStore } from "@/store/user";
 import credVsDebPorHora from "./home/credVsDebPorHora.vue";
 import DataMaiorMenorQtdMov from "./home/DataMaiorMenorQtdMov.vue";
 import DataMaiorMenorSomaMov from "./home/DataMaiorMenorSomaMov.vue";
 import movPixDiaSemana from "./home/movPixDiaSemana.vue";
 import qtdValorMovPorCoopAg from "./home/QtdValorMovPorCoopAg.vue";
 import AcoesComponente from "./home/AcoesComponente.vue";
-    
-
-const userStore = useUserStore();
-const router = useRouter();
-  
-const sidebarItems = [
-    {
-        icon: "upload",
-        text: "Adicionar novo arquivo",
-        action: () => (alert("cheguei")),
-    },
-    {
-        icon: "users",
-        text: "Gerenciar Usuarios",
-        action: () => {},
-        children: [
-            {
-                icon: "check",
-                text: "Adicionar usuario",
-                action: () => (alert("cheguei")),
-            },
-            {
-                icon: "xmark",
-                text: "Excluir usuario",
-                action: () => (alert("cheguei")),
-            },
-        ],
-    },
-];
-
-const sidebarUserItems = [
-    {
-        icon: "right-from-bracket",
-        text: "Sair",
-        action: async () => {
-            try {
-                // await loginApi.logout();
-                userStore.unsetUserData();
-                router.push({ name: "Login" });
-            } catch (error) {
-                //
-            }
-        },
-    },
-];
+import NavBar from "./home/NavBar.vue";  
 </script>
     
 <style>

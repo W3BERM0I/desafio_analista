@@ -23,9 +23,8 @@ class LogController extends Controller
      * @return void
      */
 
-     public static function addsLog(string $id = null, string $acao, string $descricao = null):void
+     public static function addsLog(string $id = null, string $acao = null, string $descricao = null):void
      {
-        info('server: ', [$_SERVER]);
          try {
             LogModel::create([
                  'user_id' => $id,

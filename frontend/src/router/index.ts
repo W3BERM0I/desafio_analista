@@ -4,6 +4,11 @@ import { useUserStore } from "@/store/user";
 
 const routes = [
     {
+        path: "/",
+        name: "Main",
+        redirect: { name: "Home" },
+    },
+    {
         path: "/home",
         name: "Home",
         // route level code-splitting

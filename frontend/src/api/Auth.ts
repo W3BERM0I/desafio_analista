@@ -7,6 +7,9 @@ export default {
             password
         });
     },
+    logout: () => {
+        return axios.get("/logout");
+    },
     createUser: (email: string, password: string) => {
         return axios.post("/createUser", {
             email,

@@ -35,8 +35,14 @@ export const useUserStore = defineStore("user", () => {
         return user.value.token;
     }
 
+    function isAdmin()
+    {
+        return user.value.admin;
+    }
+
     return {
         user,
+        isAdmin,
         setUserData,
         unsetUserData,
         getToken

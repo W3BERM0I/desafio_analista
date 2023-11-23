@@ -34,8 +34,20 @@ class AuthController extends Controller
             if($user->privileges === Privileges::ADMIN->value || $user->privileges === Privileges::SUPER_ADMIN->value)
                 $admin = !$admin;
         
+            LogController::addsLog($user->id, 'login');
+            
             return response()->json(['token' => $token->plainTextToken, 'admin' => $admin]);
         }
+
+        LogController::addsLog(null, 'tentativa de login');
+
         return response()->json(['erro'], 401);
+    }
+
+    public function logout(Request $request)
+    {
+        LogController::addsLog(null, 'logout');
+        Auth::logout();
+        return response()->json([], 204);
     }
 }

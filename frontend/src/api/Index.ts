@@ -1,9 +1,7 @@
 import axios from "axios";
 import type {
     AxiosError,
-    AxiosInstance,
     AxiosResponse,
-    InternalAxiosRequestConfig,
 } from "axios";
 
 import { useUserStore } from "@/store/user";
@@ -17,42 +15,9 @@ const apiClient = axios.create({
     }
 });
 
-// apiClient.interceptors.request.use((config: AxiosRequestConfig) => {
-
-//     const userStore = useUserStore();
-
-
-//     const token = userStore.getToken();
-//     if(token)
-//         config.headers?.Authorization = `Bearer ${token}`;
-//     return config;
-// },
-// (error: AxiosError) => {
-//     return Promise.reject(error);
-// });
-
-// const onRequest = (
-//     config: InternalAxiosRequestConfig
-// ): InternalAxiosRequestConfig => {
-//     const userStore = useUserStore();
-
-
-//     if (
-//         config.url &&
-//         config.headers &&
-//         !loginStore.publicRoutes.includes(config.url)
-//     )
-//         config.headers["Authorization"] = loginStore.getToken();
-
-//     return config;
-// };
-
-
-
 apiClient.interceptors.request.use((config: any) => {
     const userStore = useUserStore();
     const token = userStore.getToken();
-    console.log(config);
 
     if(token)
         config.headers["Authorization"] = `Bearer ${token}`;
@@ -72,7 +37,7 @@ apiClient.interceptors.response.use(
             const router = useRouter();
             // Faça o que for necessário, como redirecionar para a página de login
             console.error("Token expirado ou inválido. Redirecionando para a página de login.");
-            router.push({name: "Home"});
+            router.push({name: "Login"});
 
         }
         return Promise.reject(error);
