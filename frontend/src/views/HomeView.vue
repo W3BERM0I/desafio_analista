@@ -5,29 +5,40 @@
       <div
         class="main__dashbord"
       >
-        <div
-          v-if="status"
-          class="container__dashbord"
-        >
-          <cred-vs-deb-por-hora class="resultado__dashbord elevation-4" />
-          <data-maior-menor-qtd-mov class="resultado__dashbord elevation-4" />
-          <data-maior-menor-soma-mov class="resultado__dashbord elevation-4" />
-          <mov-pix-dia-semana class="resultado__dashbord elevation-4" />
-          <qtd-valor-mov-por-coop-ag class="resultado__dashbord elevation-4" />
-          <acoes-componente class="resultado__dashbord elevation-4" />
-        </div>
         <div 
-          v-else
-          class="container__dashbord1"
+          class="switch__layout"
         >
-          <acoes-componente class="resultado__dashbord elevation-4" />
-          <v-btn
-            style="margin-top: 40px; margin-left: 30px;"
-            @click="reload"
-          >
-            atualizar pagina a upload do arquivo
-          </v-btn>
+          <v-switch
+            v-model="layout"
+            label="Alterar layout"
+          />
         </div>
+        <div v-if="!layout">
+          <div
+            v-if="status"
+            class="container__dashbord"
+          >
+            <cred-vs-deb-por-hora class="resultado__dashbord elevation-4" />
+            <data-maior-menor-qtd-mov class="resultado__dashbord elevation-4" />
+            <data-maior-menor-soma-mov class="resultado__dashbord elevation-4" />
+            <mov-pix-dia-semana class="resultado__dashbord elevation-4" />
+            <qtd-valor-mov-por-coop-ag class="resultado__dashbord elevation-4" />
+            <acoes-componente class="resultado__dashbord elevation-4" />
+          </div>
+          <div 
+            v-else
+            class="container__dashbord1"
+          >
+            <acoes-componente class="resultado__dashbord elevation-4" />
+            <v-btn
+              style="margin-top: 40px; margin-left: 30px;"
+              @click="reload"
+            >
+              atualizar pagina a upload do arquivo
+            </v-btn>
+          </div>
+        </div>
+        <tabelas v-else />
       </div>
     </v-main>
   </v-app>
@@ -43,8 +54,10 @@ import AcoesComponente from "./home/AcoesComponente.vue";
 import NavBar from "@/components/shared/NavBar.vue";  
 import { onMounted, ref } from "vue";
 import FileApi from "@/api/File";
+import Tabelas from "./home/Tabelas.vue";
 
 const status = ref(null);
+const layout = ref(false);
 
 const reload = () => {
     location.reload();
@@ -59,6 +72,11 @@ onMounted(async () => {
 </script>
     
 <style>
+.switch__layout {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
 .main__dashbord {
     display: grid;
     height: 85vh; /* 100% da altura da viewport (janela do navegador) */

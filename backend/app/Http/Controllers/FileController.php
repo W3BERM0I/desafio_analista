@@ -75,7 +75,7 @@ class FileController extends Controller
         $duasLinhas = false;
 
         $linhaAnterior = '';
-        $aux = '';
+        $bigLine = false;
 
         // verifica se ja começou a ler uma linha no final do ultimo arquivo
         if(Cache::has('duasLinhas')) {
@@ -141,6 +141,8 @@ class FileController extends Controller
                     $ultimaCoopAg = $coopAg;
                 }
 
+                $bigLine = strlen($linha) > 200 ?: false;
+
                 $dadosAux['origem'] = $coopAg;
                 $dadosAux['nomeCorrentista'] = utf8_encode(trim(substr($linha, 16, 16)));
                 $dadosAux['docto'] = utf8_encode(trim(substr($linha, 48, 7)));
@@ -148,8 +150,9 @@ class FileController extends Controller
                 $dadosAux['descricao'] = trim(substr($linha, 62, 26));
                 $dadosAux['dr'] = trim(substr($linha, 88, 7));
                 $dadosAux['credito'] = $this->formamaStringDinheiro(trim(substr($linha, 110, 20)));
-                $dadosAux['debito'] = $this->formamaStringDinheiro(trim(substr($linha, 99, 13)));
-                $dadosAux['id'] = trim(substr($linha, 130, 2));
+                $dadosAux['debito'] = $this->formamaStringDinheiro(trim(substr($linha, ($bigLine ? 193 : 99), 13)));
+                $dadosAux['id'] = trim(substr($linha, ($bigLine ? 225 : 130), 2));
+
 
                 $ultimoDadosAux = null;
 

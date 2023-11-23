@@ -14,10 +14,10 @@ class Log extends Model
     protected $collection = 'logs';
 
     protected $fillable = [
-        'id',
+        'user_id',
         'ip',
         'data/hora',
         'acao',
-        'detalhes',
+        'descricao',
     ];
 }
