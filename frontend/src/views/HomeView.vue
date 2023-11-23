@@ -25,7 +25,7 @@ import DataMaiorMenorSomaMov from "./home/DataMaiorMenorSomaMov.vue";
 import movPixDiaSemana from "./home/movPixDiaSemana.vue";
 import qtdValorMovPorCoopAg from "./home/QtdValorMovPorCoopAg.vue";
 import AcoesComponente from "./home/AcoesComponente.vue";
-import NavBar from "./home/NavBar.vue";  
+import NavBar from "@/components/shared/NavBar.vue";  
 </script>
     
 <style>

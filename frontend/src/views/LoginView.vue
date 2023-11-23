@@ -122,7 +122,6 @@ const rules = {
 };
 
 const efetuarLogin = ( async () => {
-    //await Auth.createUser(email.value, password.value).then((res => {
     loading.value = !loading.value;
     await Auth.login(email.value, password.value).then((res => {
         userStore.setUserData(res.data as UserData);

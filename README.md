@@ -1,11 +1,20 @@
 # MOISÉS WEBER
 
 1. configurar o .env com as variaveis do docker compose
+
 2. docker compose up -d
+
 3. docker exec -it etl-conta_backend bash
+
 4. composer install
+
 5. php artisan key:generate
+
 6. php artisan migrate:fresh
+
+7. php artisan db:seed DatabaseSeeder //fazer login com login e senha que estão no seeder
+
+
 
 # REFERENCIAS
 

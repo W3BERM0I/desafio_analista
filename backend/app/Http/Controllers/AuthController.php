@@ -28,7 +28,6 @@ class AuthController extends Controller
         if (Auth::attempt($request->only(['email', 'password']))) {
             $user = Auth::user();
             $token = $user->createToken('etl');
-            info("cheguei: ", [$user->privileges]);
             $admin = false;
 
             if($user->privileges === Privileges::ADMIN->value || $user->privileges === Privileges::SUPER_ADMIN->value)

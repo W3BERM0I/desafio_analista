@@ -31,8 +31,8 @@
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/user";
 import Auth from "@/api/Auth";
-import AddUser from "../admin/AddUser.vue";
-import DeleteUser from "../admin/DeleteUser.vue";
+import AddUser from "@/views/admin/AddUser.vue";
+import DeleteUser from "@/views/admin/DeleteUser.vue";
 import { ref } from "vue";
 
 const userStore = useUserStore();
@@ -48,8 +48,6 @@ const sidebarItems = [
         action: () => (alert("cheguei")),
     },
 ];
-
-console.log(userStore.user.admin); 
 
 if(userStore.user.admin) {
     sidebarItems.push(
