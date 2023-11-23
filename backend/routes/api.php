@@ -23,11 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('login', [AuthController::class, 'login']);
-Route::get('logout', [AuthController::class, 'logout']);
-Route::post('createUser', [AdminController::class, 'createUser']);
-Route::post('deleteUser', [AdminController::class, 'deleteUser']);
-Route::get('allCommonUser', [AdminController::class, 'allCommonUser']);
 
 Route::middleware('auth:sanctum')->group(function() {
     Route::get('uploadStart', [FileController::class, 'uploadStart']);
@@ -40,6 +35,14 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('qtdValorMovPorCoopAg', [MetricsController::class, 'qtdValorMovPorCoopAg']);
     Route::get('qtdValorMovPorCoopAgPrev', [MetricsController::class, 'qtdValorMovPorCoopAgPrev']);
     Route::get('credVsDebPorHora', [MetricsController::class, 'credVsDebPorHora']);
+
+    Route::middleware(['admin'])->group(function () {
+        Route::post('login', [AuthController::class, 'login']);
+        Route::get('logout', [AuthController::class, 'logout']);
+        Route::post('createUser', [AdminController::class, 'createUser']);
+        Route::post('deleteUser', [AdminController::class, 'deleteUser']);
+        Route::get('allCommonUser', [AdminController::class, 'allCommonUser']);
+    });
 });
 
 
