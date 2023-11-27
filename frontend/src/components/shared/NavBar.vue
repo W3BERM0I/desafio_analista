@@ -40,12 +40,13 @@ const router = useRouter();
 
 const dialogDeleteUser = ref(false);
 const dialogAddUser = ref(false);
+const emits = defineEmits(["status"]);
 
 const sidebarItems = [
     {
         icon: "upload",
         text: "Adicionar novo arquivo",
-        action: () => (alert("cheguei")),
+        action: () => (emits("status")),
     },
 ];
 

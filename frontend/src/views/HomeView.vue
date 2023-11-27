@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <nav-bar />
+      <nav-bar @status="status = !status" />
       <div
         class="main__dashbord"
       >
@@ -56,7 +56,7 @@ import { onMounted, ref } from "vue";
 import FileApi from "@/api/File";
 import Tabelas from "./home/Tabelas.vue";
 
-const status = ref(null);
+const status = ref(false);
 const layout = ref(false);
 
 const reload = () => {
