@@ -12,7 +12,10 @@
 
 6. php artisan migrate:fresh
 
-7. php artisan db:seed DatabaseSeeder //fazer login com login e senha que estão no seeder
+7. trocar o model da classe vendor\laravel\sanctum\src\PersonalAccessToken.php para use Mongodb\Laravel\Eloquent\Model;
+
+8. php artisan db:seed DatabaseSeeder //fazer login com login e senha que estão no seeder
+
 
 
 
